@@ -3,7 +3,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
-    [SerializeField]private float speed;
+    [SerializeField]private float rotSpeed;
+    [SerializeField]private float linMaxSpeed;
+    [SerializeField]private float vBaseSpeed;
     private Rigidbody2D body;
     //InputActions
     private InputAction rotAct;
@@ -22,17 +24,29 @@ public class PlayerControl : MonoBehaviour
     {
         //rotation
         float rotValue = rotAct.ReadValue<float>();
-        body.angularVelocity -= rotValue * speed;
+        body.angularVelocity -= rotValue * rotSpeed;
 
-        //height power
-        // NOT WORKING RIGHT YET
+        //bounce recovery and deminish
         float powValue = powAct.ReadValue<float>();
-        if (powValue != 0) {
-            powValue = powValue * speed * body.linearVelocity.y;
-        } else {
-            powValue = body.linearVelocity.y;
-        }
-        body.linearVelocity = new Vector2(body.linearVelocity.x, powValue);
+        if ((powValue >= 0.5) && (body.linearVelocityY < vBaseSpeed) && (body.linearVelocityY > 0)) //good enough
+            body.linearVelocityY = vBaseSpeed+1;
+        else if ((powValue <= -0.5) && (body.linearVelocityY > vBaseSpeed))
+            body.linearVelocityY = vBaseSpeed;
+        
+        //clamps
+        body.rotation = Mathf.Clamp(body.rotation,-45,45);
+        body.linearVelocityX = Mathf.Clamp(body.linearVelocityX,-linMaxSpeed,linMaxSpeed);
+        body.linearVelocityY = Mathf.Clamp(body.linearVelocityY,-linMaxSpeed,linMaxSpeed);
+    }
 
+
+    private void OnTriggerEnter2D(Collider2D coll) {
+        if (coll.gameObject.tag == "Enemy") {
+            GameManager.instance.HPDown();
+        }
+        else if (coll.gameObject.tag == "Coin") {
+            Destroy(coll.gameObject);
+            GameManager.instance.CoinUp(1);
+        }
     }
 }
