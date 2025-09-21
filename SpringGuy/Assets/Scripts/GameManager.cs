@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public int maxHP { get; private set; }
     public int currHP { get; private set; }
     public int coins { get; private set; }
-    public int powerUp { get; private set; }
+    public bool[] powerUps { get; private set; }
 
     //UI components
     [SerializeField]private Image healthbar;
@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]private GameObject loseScreen;
     [SerializeField]private GameObject pauseScreen;
     [SerializeField]private GameObject buttonSet;
+    [SerializeField]private GameObject shopScreen;
 
 
     private void Awake()
@@ -37,14 +38,26 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         maxHP = currHP = 5;
-        powerUp = 0;
+        powerUps = new bool[] {false,false,false};
         SyncHUD();
 
         winScreen.SetActive(false);
         loseScreen.SetActive(false);
         pauseScreen.SetActive(false);
+        loseScreen.SetActive(false);
         buttonSet.SetActive(false);
+        
+        shopScreen.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+
+    //this is how the level actually starts
+    public void CloseShop() {
+        LoadPowerUps();
+        shopScreen.SetActive(false);
         Time.timeScale = 1;
+        SyncHUD();
     }
 
 
@@ -73,8 +86,20 @@ public class GameManager : MonoBehaviour
         SyncHUD();
     }
 
-    public void SetPowerUp(int index) {
-        powerUp = index;
+    public void SetPowerUp(int i, bool selected) {
+        powerUps[i] = selected;
+    }
+
+    private void LoadPowerUps() {  //NOTE: Powerups not implemented!
+        if (powerUps[0]) {
+            Debug.Log("You have a shield!");
+        }
+        if (powerUps[1]) {
+            Debug.Log("You bounce extra high!");
+        }
+        if (powerUps[2]) {
+            Debug.Log("You can jump in the air!");
+        }
     }
 
 
