@@ -169,6 +169,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0865ae6ed43c7d47b16527f9ce92a01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerControl
-  rotSpeed: 0.5
+  rotSpeed: 1
   linMaxSpeed: 15
   vBaseSpeed: 4

@@ -10,6 +10,7 @@ public class PlayerControl : MonoBehaviour
     //InputActions
     private InputAction rotAct;
     private InputAction powAct;
+    private InputAction pausePlayAct;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,6 +18,7 @@ public class PlayerControl : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         rotAct = InputSystem.actions.FindAction("Rotate");
         powAct = InputSystem.actions.FindAction("Power");
+        pausePlayAct = InputSystem.actions.FindAction("Pause");
     }
 
     // Update is called once per frame
@@ -34,9 +36,15 @@ public class PlayerControl : MonoBehaviour
             body.linearVelocityY = vBaseSpeed;
         
         //clamps
-        body.rotation = Mathf.Clamp(body.rotation,-45,45);
+        //body.rotation = Mathf.Clamp(body.rotation,-30,30);
         body.linearVelocityX = Mathf.Clamp(body.linearVelocityX,-linMaxSpeed,linMaxSpeed);
         body.linearVelocityY = Mathf.Clamp(body.linearVelocityY,-linMaxSpeed,linMaxSpeed);
+
+        //pause button
+        bool pausePressed = pausePlayAct.ReadValue<float>() > 0.5 ? true : false;
+        if (pausePressed) {
+            GameManager.instance.PausePlay();
+        }
     }
 
 
@@ -47,6 +55,9 @@ public class PlayerControl : MonoBehaviour
         else if (coll.gameObject.tag == "Coin") {
             Destroy(coll.gameObject);
             GameManager.instance.CoinUp(1);
+        }
+        else if (coll.gameObject.tag == "Finish") {
+            GameManager.instance.WinLevel();
         }
     }
 }
