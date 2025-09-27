@@ -91,14 +91,17 @@ public class GameManager : MonoBehaviour
     }
 
     private void LoadPowerUps() {  //NOTE: Powerups not implemented!
-        if (powerUps[0]) {
-            Debug.Log("You have a shield!");
-        }
-        if (powerUps[1]) {
-            Debug.Log("You bounce extra high!");
-        }
-        if (powerUps[2]) {
-            Debug.Log("You can jump in the air!");
+        PlayerControl player = GameObject.FindWithTag("Player").GetComponent<PlayerControl>();
+        if (player != null) {
+            if (powerUps[0]) {
+                player.childShield.SetActive(true);
+            }
+            if (powerUps[1]) {
+                Debug.Log("You bounce extra high!");
+            }
+            if (powerUps[2]) {
+                Debug.Log("You can jump in the air!");
+            }
         }
     }
 
