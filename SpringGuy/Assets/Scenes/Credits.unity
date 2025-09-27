@@ -843,7 +843,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1349317241}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.5470113
+  m_Size: 0.39938438
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1292,39 +1292,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '<b>Programming</b>
-
-    Olivia Pita
-
-
-    <b>Level Design</b>
-
-    Olivia
-    Pita
-
-
-    <b>Graphics</b>
-
-    Olivia Pita
-
-
-    <b>Audio</b>
-
-    N/A
-
-
-    <b>Other
-    Assets</b>
-
-    N/A
-
-
-    <b>Special Thanks</b>
-
-    @PandemoniumGameDev on YouTube
-
-    I
-    used his tutorials as refreshers'
+  m_text: "<b>Programming</b>\nOlivia Pita\n\nTimer code modified from John French
+    \nhttps://gamedevbeginner.com/how-to-make-countdown-timer-in-unity-minutes-seconds/\n\n<b>Level
+    Design</b>\nOlivia Pita\n\n<b>Graphics</b>\nOlivia Pita\n\n<b>Audio</b>\nBoing
+    Raw Copyright 2005 cfork <http://freesound.org/people/cfork/>\nBoing Jump Copyright
+    2012 Iwan Gabovitch <http://qubodup.net>\n\n<b>Other Assets</b>\nN/A\n\n<b>Special
+    Thanks</b>\n@PandemoniumGameDev on YouTube\nI used his tutorials as refreshers"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

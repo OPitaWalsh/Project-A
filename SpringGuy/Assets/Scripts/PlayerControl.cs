@@ -5,9 +5,12 @@ public class PlayerControl : MonoBehaviour
 {
     [SerializeField]private float rotSpeed;
     [SerializeField]private float linMaxSpeed;
-    [SerializeField]private float vBaseSpeed;
+    [SerializeField]private float heightPow;
+    private bool grounded;
     private Rigidbody2D body;
+    private AudioSource sfx;
     public GameObject childShield;
+    private Timer iframeTimer;
     //InputActions
     private InputAction rotAct;
     private InputAction powAct;
@@ -17,13 +20,17 @@ public class PlayerControl : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        grounded = false;
         body = GetComponent<Rigidbody2D>();
+        sfx = GetComponent<AudioSource>();
+        childShield = transform.Find("Shield").gameObject;
+        childShield.SetActive(false);
+        iframeTimer = transform.Find("iFrames").GetComponent<Timer>();
+
         rotAct = InputSystem.actions.FindAction("Rotate");
         powAct = InputSystem.actions.FindAction("Power");
         recoverAct = InputSystem.actions.FindAction("Recover");
         pausePlayAct = InputSystem.actions.FindAction("Pause");
-        childShield = transform.Find("Shield").gameObject;
-        childShield.SetActive(false);
     }
 
     // Update is called once per frame
@@ -33,20 +40,21 @@ public class PlayerControl : MonoBehaviour
         float rotValue = rotAct.ReadValue<float>();
         body.angularVelocity -= rotValue * rotSpeed;
 
-        //bounce recovery and deminish
-        //bool recoverPressed = recoverAct.ReadValue<float>() > 0.5 ? true : false;
-        if (recoverAct.ReadValue<float>() > 0.5) {
+        //height power
+        float powValue = powAct.ReadValue<float>();
+        if (grounded) {
+            if (powValue > 0)
+                body.AddForceY(powValue * heightPow);
+            else
+                body.AddForceY(powValue * heightPow * 2); //negative needs more power
+        }
+
+        //recovery
+        if ((recoverAct.ReadValue<float>() > 0.5) && (grounded)) {
             body.rotation = 0;
             body.angularVelocity = 0;
-            body.AddForceY(4);
+            body.AddForceY(heightPow);
         }
-        /*
-        float powValue = powAct.ReadValue<float>();
-        if ((powValue >= 0.5) && (body.linearVelocityY < vBaseSpeed) && (body.linearVelocityY > 0)) //good enough
-            body.linearVelocityY = vBaseSpeed+1;
-        else if ((powValue <= -0.5) && (body.linearVelocityY > vBaseSpeed))
-            body.linearVelocityY = vBaseSpeed;
-        */
         
         //clamps
         body.linearVelocityX = Mathf.Clamp(body.linearVelocityX,-linMaxSpeed,linMaxSpeed);
@@ -60,13 +68,18 @@ public class PlayerControl : MonoBehaviour
     }
 
 
+    // Triggers and Collisions
+
     private void OnTriggerEnter2D(Collider2D coll) {
         if (coll.gameObject.tag == "Enemy") {
-            if (GameManager.instance.powerUps[0]) {
-                GameManager.instance.SetPowerUp(0, false);
-                childShield.SetActive(false);
-            } else {
-                GameManager.instance.HPDown();
+            if (!iframeTimer.isRunning) {
+                iframeTimer.isRunning = true;
+                if (GameManager.instance.powerUps[0]) {
+                    GameManager.instance.SetPowerUp(0, false);
+                    childShield.SetActive(false);
+                } else {
+                    GameManager.instance.HPDown();
+                }
             }
         }
         else if (coll.gameObject.tag == "Coin") {
@@ -76,5 +89,18 @@ public class PlayerControl : MonoBehaviour
         else if (coll.gameObject.tag == "Finish") {
             GameManager.instance.WinLevel();
         }
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D coll) {
+        //if (coll.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+        grounded = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D coll) {
+        sfx.Play();
+        
+        //if (coll.gameObject.layer == LayerMask.NameToLayer("Terrain"))
+        grounded = false;
     }
 }
